@@ -31,6 +31,7 @@
 #include "esp_panel_lcd_st77903.hpp"
 #include "esp_panel_lcd_st77916.hpp"
 #include "esp_panel_lcd_st77922.hpp"
+#include "esp_panel_lcd_nodsiconf.hpp"
 
 namespace esp_panel::drivers {
 

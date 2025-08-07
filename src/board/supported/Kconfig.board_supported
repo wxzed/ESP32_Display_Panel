@@ -5,7 +5,7 @@ choice
     config ESP_PANEL_BOARD_MANUFACTURER_ALL
         bool "All"
         help
-            Espressif, Elecrow, M5Stack, Shenzhen Jingcai Intelligent, Waveshare
+            Espressif, Elecrow, M5Stack, Shenzhen Jingcai Intelligent, Waveshare, DFRobot
 
     config ESP_PANEL_BOARD_MANUFACTURER_ESPRESSIF
         bool "Espressif"
@@ -36,6 +36,10 @@ choice
         bool "VIEWE"
         help
             https://viewedisplay.com/
+    config ESP_PANEL_BOARD_MANUFACTURER_DFROBOT
+        bool "DFROBOT"
+        help
+            https://www.dfrobot.com/
 endchoice
 
 choice
@@ -63,5 +67,9 @@ choice
 
     if ESP_PANEL_BOARD_MANUFACTURER_VIEWE || ESP_PANEL_BOARD_MANUFACTURER_ALL
         orsource "./viewe/Kconfig.viewe"
+    endif
+    
+    if ESP_PANEL_BOARD_MANUFACTURER_DFROBOT || ESP_PANEL_BOARD_MANUFACTURER_ALL
+        orsource "./dfrobot/Kconfig.dfrobot"
     endif
 endchoice

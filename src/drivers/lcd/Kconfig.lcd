@@ -92,6 +92,9 @@ menu "LCD"
             config ESP_PANEL_DRIVERS_LCD_USE_ST77922
                 bool "Use ST77922"
                 default n
+            config ESP_PANEL_DRIVERS_LCD_USE_NODSICONF
+                bool "Use NODSICONF"
+                default n
         endif
     endmenu
 

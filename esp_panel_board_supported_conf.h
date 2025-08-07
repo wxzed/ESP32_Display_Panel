@@ -115,6 +115,16 @@
 // #define BOARD_WAVESHARE_ESP32_P4_NANO
 
 /*
+ * DFRobot Supported Boards (https://www.dfrobot.com/):
+ *
+ *  -BOARD_DFROBOT_FIREBEETLE_ESP32_P4 (FIREBEETLE-ESP32-P4): https://www.dfrobot.com/
+ *  -BOARD_DFROBOT_8_8_PANEL (8.8-inch Panel): https://www.dfrobot.com/
+ */
+// #define BOARD_DFROBOT_FIREBEETLE_ESP32_P4
+// #define BOARD_DFROBOT_8_8_PANEL
+// #define BOARD_DFROBOT_FIREBEETLE_ESP32_P4_8_8
+
+/*
  * VIEWE Supported Boards (https://viewedisplay.com/):
  *
  *  VIEWE Model Number Format (Take `UEDX24320024E` as an example):
@@ -175,7 +185,7 @@
  * 3. Patch version mismatch: No impact on functionality
  */
 #define ESP_PANEL_BOARD_SUPPORTED_FILE_VERSION_MAJOR 1
-#define ESP_PANEL_BOARD_SUPPORTED_FILE_VERSION_MINOR 2
+#define ESP_PANEL_BOARD_SUPPORTED_FILE_VERSION_MINOR 3
 #define ESP_PANEL_BOARD_SUPPORTED_FILE_VERSION_PATCH 0
 
 #endif

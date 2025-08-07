@@ -85,6 +85,7 @@
     #define ESP_PANEL_DRIVERS_LCD_USE_ST77903           (0)
     #define ESP_PANEL_DRIVERS_LCD_USE_ST77916           (0)
     #define ESP_PANEL_DRIVERS_LCD_USE_ST77922           (0)
+    #define ESP_PANEL_DRIVERS_LCD_USE_NODSICONF         (0)
 #endif // ESP_PANEL_DRIVERS_LCD_USE_ALL
 
 /**
