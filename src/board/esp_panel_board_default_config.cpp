@@ -23,6 +23,11 @@
 using namespace esp_panel::drivers;
 using namespace esp_panel::board;
 
+#ifdef ESP_PANEL_BOARD_BACKLIGHT_I2C_INIT_SEQUENCE
+// Define static initialization sequence for I2C backlight
+static const esp_panel_backlight_i2c_cmd_t i2c_backlight_init_sequence[] = ESP_PANEL_BOARD_BACKLIGHT_I2C_INIT_SEQUENCE;
+#endif
+
 #ifdef ESP_PANEL_BOARD_LCD_VENDOR_INIT_CMD
 static const esp_panel_lcd_vendor_init_cmd_t lcd_vendor_init_cmds[] = ESP_PANEL_BOARD_LCD_VENDOR_INIT_CMD();
 #endif // ESP_PANEL_BOARD_LCD_VENDOR_INIT_CMD
@@ -304,9 +309,27 @@ const BoardConfig ESP_PANEL_BOARD_DEFAULT_CONFIG = {
         },
     #elif ESP_PANEL_BOARD_BACKLIGHT_TYPE == ESP_PANEL_BACKLIGHT_TYPE_CUSTOM
         .config = BacklightCustom::Config{
-            .callback = [](int percent, void *user_data)
-                ESP_PANEL_BOARD_BACKLIGHT_CUSTOM_FUNCTION(percent, user_data),
+            .callback = [](int percent, void *user_data) -> bool {
+                ESP_PANEL_BOARD_BACKLIGHT_CUSTOM_FUNCTION(percent, user_data);
+            },
             .user_data = nullptr,
+        },
+    #elif ESP_PANEL_BOARD_BACKLIGHT_TYPE == ESP_PANEL_BACKLIGHT_TYPE_IIC
+        .config = BacklightI2C::Config{
+            .i2c_config = {
+                .i2c_port = ESP_PANEL_BOARD_BACKLIGHT_I2C_PORT,
+                .i2c_addr = ESP_PANEL_BOARD_BACKLIGHT_I2C_ADDR,
+                .sda_pin = ESP_PANEL_BOARD_BACKLIGHT_I2C_SDA_PIN,
+                .scl_pin = ESP_PANEL_BOARD_BACKLIGHT_I2C_SCL_PIN,
+                .i2c_freq = ESP_PANEL_BOARD_BACKLIGHT_I2C_FREQ,
+                .brightness_cmd = ESP_PANEL_BOARD_BACKLIGHT_I2C_BRIGHTNESS_CMD,
+                .power_cmd = ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_CMD,
+                .power_on_value = ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_ON_VALUE,
+                .power_off_value = ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_OFF_VALUE,
+                .max_brightness = ESP_PANEL_BOARD_BACKLIGHT_I2C_MAX_BRIGHTNESS,
+                .init_sequence = i2c_backlight_init_sequence,
+                .init_sequence_len = ESP_PANEL_BOARD_BACKLIGHT_I2C_INIT_SEQUENCE_LEN,
+            },
         },
     #endif // ESP_PANEL_BOARD_BACKLIGHT_TYPE
         .pre_process = {

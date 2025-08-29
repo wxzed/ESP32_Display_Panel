@@ -72,6 +72,8 @@
         #define ESP_PANEL_BOARD_BACKLIGHT_NAME    PWM_LEDC
     #elif ESP_PANEL_BOARD_BACKLIGHT_TYPE == ESP_PANEL_BACKLIGHT_TYPE_CUSTOM
         #define ESP_PANEL_BOARD_BACKLIGHT_NAME    Custom
+    #elif ESP_PANEL_BOARD_BACKLIGHT_TYPE == ESP_PANEL_BACKLIGHT_TYPE_IIC
+        #define ESP_PANEL_BOARD_BACKLIGHT_NAME    I2C
     #else
         #error "Unknown backlight type selected!"
     #endif

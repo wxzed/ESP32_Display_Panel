@@ -47,6 +47,15 @@ struct ConfigVisitor {
         return -1;
 #endif
     }
+
+    auto operator()(const BacklightI2C::Config &config) const
+    {
+#if ESP_PANEL_DRIVERS_BACKLIGHT_ENABLE_IIC
+        return BacklightI2C::BASIC_ATTRIBUTES_DEFAULT.type;
+#else
+        return -1;
+#endif
+    }
 };
 
 #define TYPE_NAME_MAP_ITEM(type_name)                                      \
@@ -66,6 +75,9 @@ const utils::unordered_map<int, utils::string> BacklightFactory::_type_name_map 
 #endif
 #if ESP_PANEL_DRIVERS_BACKLIGHT_ENABLE_CUSTOM
     TYPE_NAME_MAP_ITEM(Custom),
+#endif
+#if ESP_PANEL_DRIVERS_BACKLIGHT_ENABLE_IIC
+    TYPE_NAME_MAP_ITEM(I2C),
 #endif
 };
 
@@ -101,6 +113,9 @@ const utils::unordered_map<int, BacklightFactory::FunctionDeviceConstructor> Bac
 #endif
 #if ESP_PANEL_DRIVERS_BACKLIGHT_USE_CUSTOM
     TYPE_CREATOR_MAP_ITEM(Custom),
+#endif
+#if ESP_PANEL_DRIVERS_BACKLIGHT_USE_IIC
+    TYPE_CREATOR_MAP_ITEM(I2C),
 #endif
 };
 

@@ -20,13 +20,13 @@
 /**
  * @brief Board name
  */
-#define ESP_PANEL_BOARD_NAME                "DFRobot:FIREBEETLE_ESP32_P4_LCD_5"
+#define ESP_PANEL_BOARD_NAME                "DFRobot:FIREBEETLE_ESP32_P4_LCD_8_8"
 
 /**
  * @brief Panel resolution configuration in pixels
  */
-#define ESP_PANEL_BOARD_WIDTH               (800)  // Panel width (horizontal, in pixels)
-#define ESP_PANEL_BOARD_HEIGHT              (480)   // Panel height (vertical, in pixels)
+#define ESP_PANEL_BOARD_WIDTH               (480)  // Panel width (horizontal, in pixels)
+#define ESP_PANEL_BOARD_HEIGHT              (1920)   // Panel height (vertical, in pixels)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// Please update the following macros to configure the LCD panel /////////////////////////////
@@ -63,22 +63,22 @@
      * @brief MIPI DSI bus
      */
     /* For host */
-    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_NUM           (1)     // ESP32-P4 supports 1 or 2 lanes
-    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (1000)  // Single lane bit rate, should check the LCD drive IC
+    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_NUM           (2)     // ESP32-P4 supports 1 or 2 lanes
+    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (880)  // Single lane bit rate, should check the LCD drive IC
                                                                     // datasheet for the supported lane rate. Different
                                                                     // color format (RGB565/RGB888) may have different
                                                                     // lane bit rate requirements.
                                                                     // ESP32-P4 supports max 1500Mbps
     /* For refresh panel (DPI) */
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_CLK_MHZ            (30)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_CLK_MHZ            (48)
     #define ESP_PANEL_BOARD_LCD_MIPI_DPI_PIXEL_BITS         (ESP_PANEL_LCD_COLOR_BITS_RGB565)
                                                                     // ESP_PANEL_LCD_COLOR_BITS_RGB565/RGB666/RGB888
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HPW                (2)
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HBP                (45)
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HFP                (131)
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_VPW                (2)
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_VBP                (22)
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_VFP                (7)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HPW                (30)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HBP                (30)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HFP                (30)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_VPW                (6)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_VBP                (6)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_VFP                (6)
     /* For DSI power PHY */
     #define ESP_PANEL_BOARD_LCD_MIPI_PHY_LDO_ID             (3)     // -1 if not used.
 
@@ -124,7 +124,7 @@
 /**
  * @brief LCD transformation configuration
  */
-#define ESP_PANEL_BOARD_LCD_SWAP_XY             (0)     // 0/1
+#define ESP_PANEL_BOARD_LCD_SWAP_XY             (1)     // 0/1
 #define ESP_PANEL_BOARD_LCD_MIRROR_X            (0)     // 0/1
 #define ESP_PANEL_BOARD_LCD_MIRROR_Y            (0)     // 0/1
 #define ESP_PANEL_BOARD_LCD_GAP_X               (0)     // [0, ESP_PANEL_BOARD_WIDTH]
@@ -152,7 +152,7 @@
 /**
  * @brief Touch controller selection
  */
-#define ESP_PANEL_BOARD_TOUCH_CONTROLLER        FT5x06
+#define ESP_PANEL_BOARD_TOUCH_CONTROLLER        GT911
 
 /**
  * @brief Touch bus type selection
@@ -204,7 +204,7 @@
  */
 #define ESP_PANEL_BOARD_TOUCH_SWAP_XY           (0)     // 0/1
 #define ESP_PANEL_BOARD_TOUCH_MIRROR_X          (1)     // 0/1
-#define ESP_PANEL_BOARD_TOUCH_MIRROR_Y          (1)     // 0/1
+#define ESP_PANEL_BOARD_TOUCH_MIRROR_Y          (0)     // 0/1
 
 /**
  * @brief Touch panel control pins
@@ -229,6 +229,13 @@
 #if ESP_PANEL_BOARD_USE_BACKLIGHT
 /**
  * @brief Backlight control type selection
+ *
+ * Supported types:
+ * - `ESP_PANEL_BACKLIGHT_TYPE_SWITCH_GPIO`: Use GPIO switch to control the backlight, only support on/off
+ * - `ESP_PANEL_BACKLIGHT_TYPE_SWITCH_EXPANDER`: Use IO expander to control the backlight, only support on/off
+ * - `ESP_PANEL_BACKLIGHT_TYPE_PWM_LEDC`: Use LEDC PWM to control the backlight, support brightness adjustment
+ * - `ESP_PANEL_BACKLIGHT_TYPE_CUSTOM`: Use custom function to control the backlight
+ * - `ESP_PANEL_BACKLIGHT_TYPE_IIC`: Use I2C to control the backlight, support brightness adjustment
  */
 #define ESP_PANEL_BOARD_BACKLIGHT_TYPE          (ESP_PANEL_BACKLIGHT_TYPE_IIC)
 
@@ -259,7 +266,7 @@
      * @brief I2C backlight configuration
      */
     #define ESP_PANEL_BOARD_BACKLIGHT_I2C_PORT      (I2C_NUM_0)    // I2C port number (same as touch)
-    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_ADDR      (0x45)         // I2C device address (0x8A >> 1)
+    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_ADDR      (0x1E)         // I2C device address
     #define ESP_PANEL_BOARD_BACKLIGHT_I2C_SDA_PIN   (7)            // SDA pin number (same as touch)
     #define ESP_PANEL_BOARD_BACKLIGHT_I2C_SCL_PIN   (8)            // SCL pin number (same as touch)
     #define ESP_PANEL_BOARD_BACKLIGHT_I2C_FREQ      (400000)       // I2C frequency in Hz (same as touch)
@@ -267,9 +274,9 @@
     /**
      * @brief I2C backlight command configuration
      */
-    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_BRIGHTNESS_CMD    (0x86)  // Brightness control command
-    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_CMD         (0x86)  // Power control command (same as brightness for 5" display)
-    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_ON_VALUE    (0xFF)  // Power on value
+    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_BRIGHTNESS_CMD    (0x01)  // Brightness control command
+    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_CMD         (0x02)  // Power control command
+    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_ON_VALUE    (0x01)  // Power on value
     #define ESP_PANEL_BOARD_BACKLIGHT_I2C_POWER_OFF_VALUE   (0x00)  // Power off value
     #define ESP_PANEL_BOARD_BACKLIGHT_I2C_MAX_BRIGHTNESS    (255)   // Maximum brightness value
 
@@ -281,15 +288,16 @@
      */
     #define ESP_PANEL_BOARD_BACKLIGHT_I2C_INIT_SEQUENCE \
         { \
-            {0x86, 0xFF, 1000},  /* Set max brightness */ \
-            {0x86, 0x00, 1000},  /* Turn off */ \
-            {0x86, 0xFF, 1000}   /* Turn on with max brightness */ \
+            {0x01, 0x00, 1000},  /* Turn off brightness */ \
+            {0x02, 0x00, 1000},  /* Turn off power */ \
+            {0x01, 0xFF, 100},   /* Set max brightness */ \
+            {0x02, 0x01, 50}     /* Turn on power */ \
         }
 
     /**
      * @brief I2C backlight initialization sequence length
      */
-    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_INIT_SEQUENCE_LEN (3)
+    #define ESP_PANEL_BOARD_BACKLIGHT_I2C_INIT_SEQUENCE_LEN (4)
 
     /**
      * @brief I2C backlight function

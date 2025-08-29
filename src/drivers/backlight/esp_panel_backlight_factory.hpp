@@ -16,6 +16,7 @@
 #include "esp_panel_backlight_pwm_ledc.hpp"
 #include "esp_panel_backlight_switch_gpio.hpp"
 #include "esp_panel_backlight_switch_expander.hpp"
+#include "esp_panel_backlight_i2c.hpp"
 
 namespace esp_panel::drivers {
 
@@ -35,7 +36,8 @@ public:
                    drivers::BacklightCustom::Config,
                    drivers::BacklightPWM_LEDC::Config,
                    drivers::BacklightSwitchGPIO::Config,
-                   drivers::BacklightSwitchExpander::Config
+                   drivers::BacklightSwitchExpander::Config,
+                   drivers::BacklightI2C::Config
                    >;
 
     /**

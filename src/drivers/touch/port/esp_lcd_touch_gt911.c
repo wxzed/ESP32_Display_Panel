@@ -31,6 +31,7 @@ static const char *TAG = "GT911";
 #define ESP_LCD_TOUCH_GT911_CONFIG_REG      (0x8047)
 #define ESP_LCD_TOUCH_GT911_PRODUCT_ID_REG  (0x8140)
 #define ESP_LCD_TOUCH_GT911_ENTER_SLEEP     (0x8040)
+#define DFROBOT_TOUCH_GT911_CHECK_REG       (0x80FF)
 
 /* GT911 support key num */
 #define ESP_GT911_TOUCH_MAX_BUTTONS         (4)
@@ -284,12 +285,24 @@ static esp_err_t esp_lcd_touch_gt911_read_data(esp_lcd_touch_handle_t tp)
 
         /* Fill all coordinates */
         for (i = 0; i < touch_cnt; i++) {
+            
             tp->data.coords[i].x = ((uint16_t)buf[(i * 8) + 3] << 8) + buf[(i * 8) + 2];
             tp->data.coords[i].y = (((uint16_t)buf[(i * 8) + 5] << 8) + buf[(i * 8) + 4]);
+             
+            // 原始坐标
+            /*
+            uint16_t orig_x = ((uint16_t)buf[(i * 8) + 3] << 8) + buf[(i * 8) + 2];
+            uint16_t orig_y = (((uint16_t)buf[(i * 8) + 5] << 8) + buf[(i * 8) + 4]);
+            
+            // 坐标映射：X轴从0~1920映射到0~480，Y轴从0~480映射到0~1920
+            tp->data.coords[i].x = (orig_x * 480) / 1920;  // 将X轴从0~1920映射到0~480
+            tp->data.coords[i].y = (orig_y * 1920) / 480;  // 将Y轴从0~480映射到0~1920
+            
             tp->data.coords[i].strength = (((uint16_t)buf[(i * 8) + 7] << 8) + buf[(i * 8) + 6]);
+            */
         }
-
         portEXIT_CRITICAL(&tp->data.lock);
+        ESP_LOGI(TAG, "x: %d, y: %d", tp->data.coords[0].x, tp->data.coords[0].y);
     }
 
     return ESP_OK;
@@ -389,18 +402,64 @@ static esp_err_t touch_gt911_reset(esp_lcd_touch_handle_t tp)
     return ESP_OK;
 }
 
+
+static uint8_t GT911_Cfg[]={
+    0x65,0xE0,0x01,0x80,0x07,0x05,0x35,0x00,0x01,0x08,
+    0x1E,0x0F,0x50,0x32,0x03,0x05,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x18,0x1A,0x1E,0x14,0x8C,0x2E,0x0A,
+    0x3E,0x3C,0xEB,0x04,0x00,0x00,0x01,0x10,0x03,0x1C,
+    0x00,0x00,0x00,0x00,0x00,0x03,0x64,0x32,0x00,0x00,
+    0x00,0x19,0x64,0x94,0x45,0x02,0x00,0x00,0x00,0x04,
+    0xDD,0x1C,0x00,0xAE,0x26,0x00,0x8F,0x32,0x00,0x79,
+    0x42,0x00,0x68,0x57,0x00,0x68,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x14,0x12,0x10,0x0E,0x0C,0x0A,0x08,0x06,
+    0x04,0x02,0xFF,0xFF,0xFF,0xFF,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x02,0x04,0x06,0x08,0x0A,0x0C,0x0F,
+    0x10,0x12,0x13,0x14,0x2A,0x29,0x28,0x26,0x24,0x22,
+    0x21,0x20,0x1F,0x1E,0x1D,0x1C,0x18,0x16,0x00,0x00,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x00,
+    };
+
+static void DFRobot_GT911_Send_Cfg(esp_lcd_touch_handle_t tp, uint8_t mode){
+    uint8_t temp[2]={0x00};
+    temp[0] = 0x00;
+    temp[1] = mode;
+    for(uint8_t i = 0; i < sizeof(GT911_Cfg); i++){
+      temp[0] += GT911_Cfg[i];
+    }
+    temp[0] = (~temp[0])+1;
+    esp_lcd_panel_io_tx_param(tp->io, ESP_LCD_TOUCH_GT911_CONFIG_REG, GT911_Cfg, sizeof(GT911_Cfg));
+    esp_lcd_panel_io_tx_param(tp->io, DFROBOT_TOUCH_GT911_CHECK_REG, temp, 2);
+    
+  }
+
 static esp_err_t touch_gt911_read_cfg(esp_lcd_touch_handle_t tp)
 {
     uint8_t buf[4];
+    uint8_t buf2[190]={0x00};
 
     assert(tp != NULL);
 
     ESP_RETURN_ON_ERROR(touch_gt911_i2c_read(tp, ESP_LCD_TOUCH_GT911_PRODUCT_ID_REG, (uint8_t *)&buf[0], 3), TAG, "GT911 read error!");
     ESP_RETURN_ON_ERROR(touch_gt911_i2c_read(tp, ESP_LCD_TOUCH_GT911_CONFIG_REG, (uint8_t *)&buf[3], 1), TAG, "GT911 read error!");
+    ESP_RETURN_ON_ERROR(touch_gt911_i2c_read(tp, ESP_LCD_TOUCH_GT911_CONFIG_REG, (uint8_t *)&buf2[0], 184), TAG, "GT911 read error!");
 
     ESP_LOGI(TAG, "TouchPad_ID:0x%02x,0x%02x,0x%02x", buf[0], buf[1], buf[2]);
     ESP_LOGI(TAG, "TouchPad_Config_Version:%d", buf[3]);
-
+    for(uint8_t i = 0; i < 190; i += 10){
+        ESP_LOGI(TAG, "0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X", buf2[i], buf2[i+1], buf2[i+2], buf2[i+3], buf2[i+4], buf2[i+5], buf2[i+6], buf2[i+7], buf2[i+8], buf2[i+9]);
+    }
+    //DFRobot_GT911_Send_Cfg(tp, 0x01);
+    ESP_RETURN_ON_ERROR(touch_gt911_i2c_read(tp, ESP_LCD_TOUCH_GT911_CONFIG_REG, (uint8_t *)&buf2[0], 184), TAG, "GT911 read error!");
+    ESP_LOGI(TAG, "--------------------------------");
+    for(uint8_t i = 0; i < 190; i += 10){
+        ESP_LOGI(TAG, "0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X", buf2[i], buf2[i+1], buf2[i+2], buf2[i+3], buf2[i+4], buf2[i+5], buf2[i+6], buf2[i+7], buf2[i+8], buf2[i+9]);
+    }
     return ESP_OK;
 }
 

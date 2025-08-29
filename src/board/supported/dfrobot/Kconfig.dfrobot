@@ -2,3 +2,7 @@ config BOARD_DFROBOT_FIREBEETLE_ESP32_P4_LCD_5
     bool "FIREBEETLE-ESP32-P4-LCD-5"
     help
         https://www.dfrobot.com/
+config BOARD_DFROBOT_FIREBEETLE_ESP32_P4_LCD_8_8
+    bool "FIREBEETLE-ESP32-P4-LCD-8-8"
+    help
+        https://www.dfrobot.com/
