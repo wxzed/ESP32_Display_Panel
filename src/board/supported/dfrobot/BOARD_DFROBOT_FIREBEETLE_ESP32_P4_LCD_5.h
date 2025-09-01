@@ -42,7 +42,7 @@
 /**
  * @brief LCD controller selection
  */
-#define ESP_PANEL_BOARD_LCD_CONTROLLER      NODSICONF
+#define ESP_PANEL_BOARD_LCD_CONTROLLER      SIMPLE
 
 /**
  * @brief LCD bus type selection

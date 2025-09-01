@@ -230,6 +230,14 @@
                 #define ESP_PANEL_DRIVERS_LCD_USE_NODSICONF (0)
             #endif
         #endif
+
+        #ifndef ESP_PANEL_DRIVERS_LCD_USE_SIMPLE
+            #ifdef CONFIG_ESP_PANEL_DRIVERS_LCD_USE_SIMPLE
+                #define ESP_PANEL_DRIVERS_LCD_USE_SIMPLE CONFIG_ESP_PANEL_DRIVERS_LCD_USE_SIMPLE
+            #else
+                #define ESP_PANEL_DRIVERS_LCD_USE_SIMPLE (0)
+            #endif
+        #endif
     #endif // ESP_PANEL_DRIVERS_LCD_USE_ALL
 
     #ifndef ESP_PANEL_DRIVERS_LCD_COMPILE_UNUSED_DRIVERS
@@ -425,6 +433,14 @@
         #define ESP_PANEL_DRIVERS_LCD_ENABLE_NODSICONF  (1)
     #else
         #define ESP_PANEL_DRIVERS_LCD_ENABLE_NODSICONF  (0)
+    #endif
+#endif
+
+#ifndef ESP_PANEL_DRIVERS_LCD_ENABLE_SIMPLE
+    #if ESP_PANEL_DRIVERS_LCD_COMPILE_UNUSED_DRIVERS || ESP_PANEL_DRIVERS_LCD_USE_SIMPLE
+        #define ESP_PANEL_DRIVERS_LCD_ENABLE_SIMPLE  (1)
+    #else
+        #define ESP_PANEL_DRIVERS_LCD_ENABLE_SIMPLE  (0)
     #endif
 #endif
 
